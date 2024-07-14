@@ -1,49 +1,23 @@
-from flask import Flask, request
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask, request, render_template
+import sqlite3
+import pandas as pd
+import os
+os.chdir(os.path.dirname(__file__))
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chinook.db'  # SQLiteデータベースを使用
-db = SQLAlchemy(app)
 
-class Movie(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(50), unique=True, nullable=False)
-    director = db.Column(db.String(50), nullable=False)
-    genre = db.Column(db.String(50), nullable=False)
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        query = request.form['query']
+        conn = sqlite3.connect('chinook.db')
+        try:
+            df = pd.read_sql_query(query, conn)
+            result = df.to_html()
+        except Exception as e:
+            result = str(e)
+        return render_template(r'C:\Users\yoshinaga\Documents\Python Scripts\ForTrial\4_application\sql_web_app\index.html', result=result)
+    return render_template(r'C:\Users\yoshinaga\Documents\Python Scripts\ForTrial\4_application\sql_web_app\index.html', result="")
 
-@app.route('/movies', methods=['POST'])
-def add_movie():
-    movie_data = request.get_json()
-    new_movie = Movie(title=movie_data['title'], director=movie_data['director'], genre=movie_data['genre'])
-    db.session.add(new_movie)
-    db.session.commit()
-    return {'id': new_movie.id}
-
-@app.route('/movies', methods=['GET'])
-def get_movies():
-    movies = Movie.query.all()
-    return {'movies': [{ 'title': movie.title, 'director': movie.director, 'genre': movie.genre } for movie in movies]}
-
-@app.route('/movies/<id>', methods=['PUT'])
-def update_movie(id):
-    movie_data = request.get_json()
-    movie = Movie.query.get(id)
-    if 'title' in movie_data:
-        movie.title = movie_data['title']
-    if 'director' in movie_data:
-        movie.director = movie_data['director']
-    if 'genre' in movie_data:
-        movie.genre = movie_data['genre']
-    db.session.commit()
-    return {'message': 'Movie updated'}
-
-@app.route('/movies/<id>', methods=['DELETE'])
-def delete_movie(id):
-    movie = Movie.query.get(id)
-    db.session.delete(movie)
-    db.session.commit()
-    return {'message': 'Movie deleted'}
-
-if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run()

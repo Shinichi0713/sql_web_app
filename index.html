@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SQL Executor</title>
+</head>
+<body>
+    <form method="POST">
+        <textarea name="query" rows="10" cols="30"></textarea><br>
+        <input type="submit" value="Execute">
+    </form>
+    <div>{{ result | safe }}</div>
+</body>
+</html>
