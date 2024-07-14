@@ -1,5 +1,6 @@
 import sqlite3
 import pandas as pd
+import os
 
 class DbOperator():
     def __init__(self, db_path):
@@ -26,7 +27,8 @@ class DbOperator():
 
 
 if __name__ == '__main__':
-    db = DbOperator(r"C:\Users\yoshinaga\Documents\Python Scripts\ForTrial\4_application\sql_web_app\chinook.db")
+    dir_current = os.path.dirname(__file__)
+    db = DbOperator(dir_current + "/chinook.db")
     print(db.db_path)
     datas = db.join_tables("albums", "artists", "ArtistId", "ArtistId")
     datas = pd.DataFrame(datas)
