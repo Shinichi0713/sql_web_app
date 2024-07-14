@@ -12,7 +12,7 @@
 python app.py
 ```
 
-実行すると以下のようにSQLを実行することが出来る
+実行すると以下のようにweb app上でSQLを実行することが出来る
 ![image](https://github.com/user-attachments/assets/95e4a5fe-185f-4c1a-9087-1f49ed3ac4b0)
 
 
