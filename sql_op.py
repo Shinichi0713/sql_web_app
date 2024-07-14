@@ -20,8 +20,33 @@ class DbOperator():
         column_names = [description[0] for description in cursor.description]
         rows.insert(0, column_names)
         return rows
+    
+    def create_view(self, view_name, table1, table2, key1, key2):
+        cursor = self.conn.cursor()
+        query = f"SELECT * FROM {table1} JOIN {table2} ON {table1}.{key1} = {table2}.{key2}"
+        cursor.execute(f"CREATE VIEW {view_name} AS {query}")
+        self.conn.commit()
+
+    def show_views(self):
+        cursor = self.conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='view';")
+        views = cursor.fetchall()
+        views = [element[0] for element in views]
+        return views
+
+    def make_dataframe(self, datas):
+        df = pd.DataFrame(datas)
+        df.columns = df.iloc[0]
+        df = df.drop(0)
+        print(df.head())
+        return df
 
     def __del__(self):
+        views = self.show_views()
+        for view in views:
+            self.conn.execute(f"DROP VIEW {view}")
+            print(f"drop view {view}")
+
         print("close db connection")
         self.conn.close()
 
@@ -31,7 +56,7 @@ if __name__ == '__main__':
     db = DbOperator(dir_current + "/chinook.db")
     print(db.db_path)
     datas = db.join_tables("albums", "artists", "ArtistId", "ArtistId")
-    datas = pd.DataFrame(datas)
-    datas.columns = datas.iloc[0]
-    datas = datas.drop(0)
-    print(datas.head())
+
+    # viewを作る
+    db.create_view("albums_artists", "albums", "artists", "ArtistId", "ArtistId")
+    print(db.show_views())
