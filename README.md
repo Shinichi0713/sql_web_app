@@ -1,6 +1,8 @@
 # sql_web_app
 # SQLの練習用アプリ
-記載されたSQLを基に操作を行う
+pythonではsqlightで作ったsqlの結果を確認するsql serverのようなツールがない<br>
+このため、sqlの結果を確認しながら手を動かして覚えるのが難しい<br>
+記載されたSQLをベースに結果を表示するwebアプリを作る
 
 
 # how to execute
