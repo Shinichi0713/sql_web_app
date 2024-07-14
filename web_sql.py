@@ -19,5 +19,11 @@ def index():
         return render_template('index.html', result=result)
     return render_template('index.html', result="")
 
+
+@app.route('/schedule')
+def another_page():
+    return render_template('schedule.html')
+
+
 if __name__ == "__main__":
     app.run()
