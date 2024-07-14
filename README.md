@@ -1,5 +1,6 @@
 # sql_web_app
-
+# SQLの練習用アプリ
+記載されたSQLを基に操作を行う
 
 
 # how to execute
@@ -10,3 +11,7 @@
 ```
 python app.py
 ```
+
+
+
+
